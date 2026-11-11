@@ -1,0 +1,420 @@
+.email-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.editor-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.editor-actions button {
+  margin-left: 12px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.editor-actions button:hover {
+  background-color: #0056b3;
+}
+
+.editor-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.panel {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.panel-left {
+  width: 250px;
+  background-color: white;
+  border-right: 1px solid #e0e0e0;
+  padding: 16px;
+}
+
+.panel-center {
+  flex: 1;
+  background-color: #f0f0f0;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.panel-right {
+  width: 300px;
+  background-color: white;
+  border-left: 1px solid #e0e0e0;
+  padding: 16px;
+}
+
+/* Block Library */
+.block-library h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.block-category {
+  margin-bottom: 24px;
+}
+
+.block-category h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.blocks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.block-item {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.block-item:hover {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.block-icon {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.block-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Email Canvas */
+.canvas-header h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.canvas-header p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  border: 2px dashed #e0e0e0;
+}
+
+.empty-state p:first-child {
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.canvas-section {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.canvas-section:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.canvas-section.selected {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.section-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 6px 6px 0 0;
+}
+
+.section-type {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.section-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.section-actions button {
+  padding: 4px 8px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.section-actions button:hover {
+  background-color: #e9ecef;
+}
+
+.section-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.section-content {
+  padding: 16px;
+}
+
+.section-preview {
+  min-height: 40px;
+}
+
+.section-preview.header {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.section-preview.hero h1 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.section-preview.hero p {
+  margin: 0;
+  color: #666;
+}
+
+.section-preview.image img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.section-preview.image .placeholder {
+  padding: 40px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  color: #666;
+}
+
+.section-preview.button button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.section-preview.columns .columns-container {
+  display: flex;
+  gap: 16px;
+}
+
+.section-preview.columns .column {
+  flex: 1;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.section-preview.html pre {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+/* Properties Panel */
+.properties-panel h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.global-settings h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.property-group {
+  margin-bottom: 16px;
+}
+
+.property-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.property-group input,
+.property-group textarea,
+.property-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.property-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Preview Overlay */
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-container {
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.preview-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.preview-controls button {
+  margin-left: 8px;
+  padding: 6px 12px;
+  background-color: #e9ecef;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.preview-controls button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.preview-frame {
+  flex: 1;
+  background-color: #f0f0f0;
+  padding: 20px;
+  overflow: auto;
+}
+
+.preview-panel.mobile .preview-frame {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+}
+
+/* Drag and drop styles */
+.canvas-section[draggable="true"] {
+  cursor: move;
+}
+
+.canvas-section.drag-over {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Dragging state */
+.canvas-section.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .editor-layout {
+    flex-direction: column;
+  }
+  
+  .panel-left,
+  .panel-right {
+    width: 100%;
+    height: auto;
+  }
+  
+  .panel-center {
+    min-height: 400px;
+  }
+}
