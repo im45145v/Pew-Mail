@@ -33,12 +33,17 @@ class TestGoogleIntegration:
     @pytest.fixture
     def mock_google_account(self, mock_user):
         """Mock Google account"""
+        # Create a token encryption instance to encrypt the token properly
+        token_encryption = TokenEncryption()
+        refresh_token = "valid_refresh_token"
+        encrypted_refresh_token = token_encryption.encrypt(refresh_token)
+        
         return GoogleAccount(
             id=str(uuid.uuid4()),
             user_id=mock_user.id,
             email="test@gmail.com",
             name="Test User",
-            encrypted_refresh_token="encrypted_refresh_token",
+            encrypted_refresh_token=encrypted_refresh_token,
             encrypted_access_token="encrypted_access_token",
             access_token_expires_at=datetime.utcnow() + timedelta(hours=1),
             status=GoogleAccountStatus.CONNECTED,
@@ -153,16 +158,18 @@ class TestGoogleIntegration:
         mock_profile = {'emailAddress': 'test@gmail.com', 'messagesTotal': 100}
         mock_service.users().getProfile().execute.return_value = mock_profile
         mock_build.return_value = mock_service
-        
+    
         # Setup mock database query
         mock_db.query.return_value.filter.return_value.first.return_value = mock_google_account
-        
+    
         # Create provider and test
         provider = GoogleEmailProvider(mock_db)
         is_valid = provider.validate_account(mock_google_account.id)
-        
+    
         # Verify the result
         assert is_valid is True
+        # Verify the account status was updated
+        assert mock_google_account.status == GoogleAccountStatus.CONNECTED
         assert mock_google_account.status == GoogleAccountStatus.CONNECTED
         mock_service.users().getProfile().execute.assert_called_once()
     

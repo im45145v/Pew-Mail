@@ -9,6 +9,11 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
+# Set the database URL from our application settings
+from app.core.config import settings
+if not config.get_main_option("sqlalchemy.url"):
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -17,21 +22,34 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.database.session import Base
+# Main models
 from app.models.user import User
 from app.models.organization import Organization
 from app.models.organization_membership import OrganizationMembership
+from app.models.organization_invitation import OrganizationInvitation
 from app.models.project import Project
 from app.models.brand_profile import BrandProfile
+from app.models.contact import Contact
+from app.models.personalization import PersonalizationSchema, RecipientSnapshot, PersonalizedEmail
+from app.models.notification import Notification
+
+# Email models
 from app.models.email.email import Email
-from app.models.email.version import EmailVersion
-from app.models.email.asset import EmailAsset
 from app.models.email.template import EmailTemplate
-from app.models.email.staging import StagingSnapshot
-from app.models.email.validation import ValidationRun, ValidationResult
-from app.models.email.test import TestRecipient, TestSend, RenderingReview
+from app.models.email.template_version import EmailTemplateVersion
+from app.models.email.component import ReusableComponent, ReusableComponentVersion
+from app.models.email.design_token import DesignTokenSet
 from app.models.email.approval import Approval, ReviewComment
+from app.models.email.asset import EmailAsset
 from app.models.email.audit import EmailAuditEvent
 from app.models.email.google_account import GoogleAccount, GoogleDraft, GoogleSendHistory
+from app.models.email.staging import StagingSnapshot
+from app.models.email.test import TestRecipient, TestSend, RenderingReview
+from app.models.email.validation import ValidationRun, ValidationResult
+from app.models.email.version import EmailVersion
+from app.models.email.collaboration import EmailComment, EmailCommentReply, ActivityEvent
+from app.models.email.campaign import Campaign, CampaignEmail
+from app.models.email.analytics import ProviderEvent, EmailAnalyticsAggregate
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

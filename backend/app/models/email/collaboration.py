@@ -64,7 +64,7 @@ class ActivityEvent(BaseModel):
     
     # Additional context
     description = Column(Text, nullable=True)
-    metadata = Column(String, nullable=True)  # Additional structured data (using String instead of JSON to avoid naming conflict)
+    event_metadata = Column(String, nullable=True)  # Additional structured data (renamed from metadata to avoid conflict)
     
     def __repr__(self):
         return f"<ActivityEvent(id={self.id}, action='{self.action}', entity_type='{self.entity_type}')>"

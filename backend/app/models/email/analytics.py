@@ -37,7 +37,7 @@ class ProviderEvent(BaseModel):
     recipient = Column(String, nullable=True)  # Email address of recipient
     
     # Additional data
-    metadata = Column(String, nullable=True)  # Additional event data (using String instead of JSON to avoid naming conflict)
+    event_metadata = Column(String, nullable=True)  # Additional event data (renamed from metadata to avoid conflict)
     
     # Processing status
     processed_at = Column(DateTime, nullable=False)
