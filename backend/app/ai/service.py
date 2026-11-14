@@ -255,6 +255,75 @@ class AIService:
             }
         }
     
+    async def modify_email(
+        self,
+        user_request: str,
+        email_document: Dict[str, Any],
+        skills: List[AISkill],
+        model: str = "gpt-4",
+        temperature: float = 0.7
+    ) -> List[Dict[str, Any]]:
+        """
+        Modify an existing email document based on a user request.
+        
+        Args:
+            user_request: Natural language description of desired changes
+            email_document: Current email document
+            skills: List of relevant skills
+            model: AI model to use
+            temperature: Temperature for generation creativity
+            
+        Returns:
+            List of operations to apply to the email document
+        """
+        # Assemble instructions for the AI
+        skill_instructions = "\n".join([
+            f"### {skill.name}:\n{skill.instructions}\n\n"
+            for skill in skills
+        ])
+        
+        # Format the prompt
+        prompt = f"""
+You are PewPew, an AI email design assistant for Pew Mail.
+
+Here is the user's request:
+"""
+{user_request}
+"""
+
+Current email document:
+{json.dumps(email_document, indent=2)}
+
+Relevant skills:
+{skill_instructions}
+
+Based on the user's request, suggest specific operations to improve or modify the email.
+Each operation should be a dict with:
+- operation_type: the type of change (e.g., "add_section", "update_section", "delete_section", "update_settings")
+- data: the data required for the operation
+- description: a concise explanation of the change
+
+Respond ONLY with a JSON array of operations. Do not include additional text.
+"""
+        
+        # Call the AI provider
+        response = await self.provider.generate_response(
+            prompt=prompt,
+            max_tokens=2000,
+            temperature=temperature,
+            model=model
+        )
+        
+        # Parse the response
+        try:
+            operations = json.loads(response.strip())
+            if not isinstance(operations, list):
+                raise ValueError("Response is not a list of operations")
+            return operations
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse AI response: {e}")
+            return []
+            
     def _create_generation_prompt(
         self, 
         user_request: str, 

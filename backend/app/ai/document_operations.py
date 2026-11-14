@@ -188,73 +188,235 @@ def apply_operations_to_document(document: Dict[str, Any], operations: List[Docu
     
     return result_document
 
-def _apply_add_section(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply add_section operation to document"""
+def apply_operations_to_document(
+    email_document: Dict[str, Any],
+    operations: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """
+    Apply a list of operations to an email document.
+    
+    Args:
+        email_document: The current email document
+        operations: List of operations to apply
+        
+    Returns:
+        The updated email document
+        
+    Raises:
+        ValueError: If an operation is invalid
+    """
+    # Make a deep copy of the document to avoid modifying the original
+    updated_document = {
+        **email_document,
+        "sections": email_document["sections"].copy()
+    }
+    
+    for operation_dict in operations:
+        # Create a DocumentOperation instance
+        try:
+            operation = DocumentOperation(**operation_dict)
+            DocumentOperationValidator.validate_operation(operation)
+        except Exception as e:
+            raise ValueError(f"Invalid operation: {str(e)}")
+        
+        # Apply the operation
+        if operation.operation_type == "add_section":
+            updated_document = _apply_add_section(updated_document, operation)
+        elif operation.operation_type == "update_section":
+            updated_document = _apply_update_section(updated_document, operation)
+        elif operation.operation_type == "remove_section":
+            updated_document = _apply_remove_section(updated_document, operation)
+        elif operation.operation_type == "reorder_sections":
+            updated_document = _apply_reorder_sections(updated_document, operation)
+        elif operation.operation_type == "update_metadata":
+            updated_document = _apply_update_metadata(updated_document, operation)
+        elif operation.operation_type == "update_global_style":
+            updated_document = _apply_update_global_style(updated_document, operation)
+        elif operation.operation_type == "duplicate_section":
+            updated_document = _apply_duplicate_section(updated_document, operation)
+        else:
+            raise ValueError(f"Unsupported operation type: {operation.operation_type}")
+    
+    return updated_document
+
+
+def _apply_add_section(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply an add_section operation to the document"""
     new_section = {
-        "id": str(uuid.uuid4()),
+        "id": f"section-{uuid.uuid4()}",
         "type": operation.data["type"],
         "props": operation.data["props"]
     }
     
-    document["sections"].append(new_section)
-    return document
-
-def _apply_update_section(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply update_section operation to document"""
-    for i, section in enumerate(document["sections"]):
-        if section["id"] == operation.section_id:
-            # Update props
-            if "props" in operation.data:
-                section["props"].update(operation.data["props"])
-            # Update type if specified
-            if "type" in operation.data:
-                section["type"] = operation.data["type"]
-            break
-    
-    return document
-
-def _apply_remove_section(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply remove_section operation to document"""
-    document["sections"] = [
-        section for section in document["sections"] 
-        if section["id"] != operation.section_id
-    ]
-    return document
-
-def _apply_reorder_sections(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply reorder_sections operation to document"""
-    # This is a simplified implementation
-    # In a real app, you'd want more sophisticated reordering logic
-    if "new_order" in operation.data:
-        section_map = {section["id"]: section for section in document["sections"]}
-        document["sections"] = [
-            section_map[section_id] for section_id in operation.data["new_order"]
-            if section_id in section_map
+    # Create a copy of the document with updated sections
+    updated_document = {
+        **document,
+        "sections": [
+            *document["sections"],
+            new_section
         ]
+    }
     
-    return document
+    return updated_document
 
-def _apply_update_global_style(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply update_global_style operation to document"""
-    document["settings"].update(operation.data)
-    return document
 
-def _apply_update_metadata(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply update_metadata operation to document"""
-    document["metadata"].update(operation.data)
-    return document
-
-def _apply_duplicate_section(document: Dict[str, Any], operation: DocumentOperation) -> Dict[str, Any]:
-    """Apply duplicate_section operation to document"""
+def _apply_update_section(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply an update_section operation to the document"""
+    updated_sections = []
     for section in document["sections"]:
         if section["id"] == operation.section_id:
-            # Create a copy with new ID
-            duplicated_section = {
-                "id": str(uuid.uuid4()),
-                "type": section["type"],
-                "props": section["props"].copy()
+            # Create an updated section
+            updated_section = {
+                **section,
+                "props": {
+                    **section["props"],
+                    **operation.data["props"]
+                }
             }
-            document["sections"].append(duplicated_section)
-            break
+            updated_sections.append(updated_section)
+        else:
+            updated_sections.append(section)
     
-    return document
+    # Create a copy of the document with updated sections
+    updated_document = {
+        **document,
+        "sections": updated_sections
+    }
+    
+    return updated_document
+
+
+def _apply_remove_section(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply a remove_section operation to the document"""
+    # Filter out the section to remove
+    updated_sections = [
+        section for section in document["sections"]
+        if section["id"] != operation.section_id
+    ]
+    
+    # Create a copy of the document with updated sections
+    updated_document = {
+        **document,
+        "sections": updated_sections
+    }
+    
+    return updated_document
+
+
+def _apply_reorder_sections(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply a reorder_sections operation to the document"""
+    section_order = operation.data.get("order", [])
+    
+    if not section_order:
+        raise ValueError("Section order is required for reorder_sections operation")
+    
+    # Create a mapping of section_id to section
+    section_map = {section["id"]: section for section in document["sections"]}
+    
+    # Reorder sections according to the specified order
+    updated_sections = []
+    for section_id in section_order:
+        if section_id in section_map:
+            updated_sections.append(section_map[section_id])
+    
+    # Add any sections not in the order list at the end
+    missing_sections = [
+        section for section_id, section in section_map.items()
+        if section_id not in section_order
+    ]
+    
+    updated_sections.extend(missing_sections)
+    
+    # Create a copy of the document with updated sections
+    updated_document = {
+        **document,
+        "sections": updated_sections
+    }
+    
+    return updated_document
+
+
+def _apply_update_metadata(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply an update_metadata operation to the document"""
+    updated_metadata = {
+        **document["metadata"],
+        **operation.data
+    }
+    
+    # Create a copy of the document with updated metadata
+    updated_document = {
+        **document,
+        "metadata": updated_metadata
+    }
+    
+    return updated_document
+
+
+def _apply_update_global_style(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply an update_global_style operation to the document"""
+    updated_settings = {
+        **document["settings"],
+        **operation.data
+    }
+    
+    # Create a copy of the document with updated settings
+    updated_document = {
+        **document,
+        "settings": updated_settings
+    }
+    
+    return updated_document
+
+
+def _apply_duplicate_section(
+    document: Dict[str, Any],
+    operation: DocumentOperation
+) -> Dict[str, Any]:
+    """Apply a duplicate_section operation to the document"""
+    # Find the section to duplicate
+    section_to_duplicate = next(
+        (section for section in document["sections"] if section["id"] == operation.section_id),
+        None
+    )
+    
+    if not section_to_duplicate:
+        raise ValueError(f"Section not found: {operation.section_id}")
+    
+    # Create a new section with a new ID
+    duplicated_section = {
+        **section_to_duplicate,
+        "id": f"section-{uuid.uuid4()}"
+    }
+    
+    # Insert the duplicated section after the original
+    updated_sections = []
+    for section in document["sections"]:
+        updated_sections.append(section)
+        if section["id"] == operation.section_id:
+            updated_sections.append(duplicated_section)
+    
+    # Create a copy of the document with updated sections
+    updated_document = {
+        **document,
+        "sections": updated_sections
+    }
+    
+    return updated_document

@@ -1,0 +1,71 @@
+# Visual Hierarchy Expert Skill
+
+---
+
+## Metadata
+name: "visual_hierarchy_expert"
+description: "Improves email layout and readability by optimizing visual hierarchy, spacing, alignment, and typography. Applies design principles to enhance clarity and engagement."
+version: "1.0"
+category: "email_design"
+
+---
+
+## Instructions
+instructions: |
+  1. **Analyze Current Email**
+     - Review the existing email structure and identify sections.
+     - Check for visual hierarchy issues (e.g., unclear headings, inconsistent spacing).
+     
+  2. **Gather Context**
+     - Fetch brand guidelines for colors, typography, and spacing.
+     - Consider the email's purpose and audience (e.g., formal vs. playful).
+
+  3. **Optimize Visual Hierarchy**
+     - Ensure headings and sections follow a clear logical flow.
+     - Use typography (font size, weight, color) to distinguish hierarchy.
+     - Recommend spacing adjustments for better readability.
+
+  4. **Improve Layout**
+     - Suggest alignment improvements for a cleaner look.
+     - Recommend color balance using brand-approved palette.
+     - Propose layout tweaks to improve engagement (e.g., repositioning CTAs).
+
+  5. **Validate Changes**
+     - Preview the updated layout to ensure readability.
+     - Check mobile responsiveness.
+
+  6. **Present Recommendations**
+     - Show before/after comparisons where possible.
+     - Explain the reasoning behind suggested changes.
+     - Provide 2-3 design directions if multiple improvements are possible.
+
+  7. **Apply to Document**
+     - If the user approves, apply changes to the email document.
+     - Provide a summary of what was changed.
+
+---
+
+## Use Cases
+use_cases:
+  - "My email looks cluttered and hard to read."
+  - "I want to improve the layout of this newsletter."
+  - "The sections in my email don't stand out enough."
+  - "Can you make this email more professional?"
+  - "I need help organizing this email for better clarity."
+
+---
+
+## Constraints
+constraints:
+  - "Must adhere to brand guidelines for colors, typography, and spacing."
+  - "Must not alter the email's core content or purpose."
+  - "Must ensure changes improve readability on both desktop and mobile."
+
+---
+
+## Tools
+tools:
+  - "document_operations"  # Apply layout changes to the email document
+  - "brand_validation"     # Validate against brand guidelines
+  - "email_rendering"      # Preview email layout
+  - "mobile_preview"       # Check mobile responsiveness

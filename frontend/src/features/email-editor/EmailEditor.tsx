@@ -213,11 +213,67 @@ const EmailEditor: React.FC<EmailEditorProps> = ({ emailId, projectId, onSave })
 
   // Handle applying AI operations to the email document
   const handleApplyOperations = (operations: any[], explanation: string) => {
-    // In a real implementation, this would call the backend API to apply the operations
     console.log('Applying operations:', operations);
     
-    // For demonstration, let's apply a simple operation
-    if (operations && operations.length > 0) {
+    if (!operations || operations.length === 0) return;
+    
+    // Apply operations locally
+    try {
+      // In a real implementation, this would call the backend API
+      // For now, apply operations locally
+      let updatedDocument = { ...emailDocument };
+      
+      operations.forEach((op) => {
+        switch (op.operation_type) {
+          case "add_section":
+            const newSection = {
+              id: `section-${Date.now()}`,
+              type: op.data.type,
+              props: op.data.props || {}
+            };
+            updatedDocument.sections = [...updatedDocument.sections, newSection];
+            break;
+          
+          case "update_section":
+            updatedDocument.sections = updatedDocument.sections.map((section) => {
+              if (section.id === op.section_id) {
+                return {
+                  ...section,
+                  props: { ...section.props, ...op.data.props }
+                };
+              }
+              return section;
+            });
+            break;
+          
+          case "remove_section":
+            updatedDocument.sections = updatedDocument.sections.filter(
+              (section) => section.id !== op.section_id
+            );
+            break;
+          
+          case "update_metadata":
+            updatedDocument.metadata = {
+              ...updatedDocument.metadata,
+              ...op.data
+            };
+            break;
+          
+          case "update_global_style":
+            updatedDocument.settings = {
+              ...updatedDocument.settings,
+              ...op.data
+            };
+            break;
+        }
+      });
+      
+      // Update the email document
+      setEmailDocument(updatedDocument);
+      console.log('Operations applied successfully:', explanation);
+    } catch (error) {
+      console.error('Failed to apply operations:', error);
+    }
       const operation = operations[0];
       if (operation.operation_type === 'add_section') {
         addSection(operation.data.type);

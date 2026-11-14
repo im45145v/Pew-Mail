@@ -28,5 +28,12 @@ from .email import (
     EmailVersion,
     EmailComment, EmailCommentReply, ActivityEvent,
     Campaign, CampaignEmail, CampaignStatus,
+
+# New models
+from .campaign import Campaign
+from .template import Template
+from .ai_usage import AIUsage
+from .billing import Billing, BillingInvoice
+from .delivery import Delivery, DeliveryRecipient
     ProviderEvent, EmailAnalyticsAggregate, AnalyticsSource, AnalyticsEventType
 )

@@ -1,0 +1,25 @@
+{
+  "skills": [
+    {
+      "name": "email_architect",
+      "description": "Guides users through creating a structured email from a natural language brief. Understands email intent, gathers missing information, and proposes a complete email structure.",
+      "category": "email_creation",
+      "file": "email_creation/email_architect.yaml",
+      "version": "1.0"
+    },
+    {
+      "name": "visual_hierarchy_expert",
+      "description": "Improves email layout and readability by optimizing visual hierarchy, spacing, alignment, and typography. Applies design principles to enhance clarity and engagement.",
+      "category": "email_design",
+      "file": "email_design/visual_hierarchy_expert.yaml",
+      "version": "1.0"
+    },
+    {
+      "name": "brand_consistency_checker",
+      "description": "Validates email content and design against brand guidelines, including colors, typography, logos, tone, and writing style. Ensures brand consistency across all communications.",
+      "category": "quality",
+      "file": "quality/brand_consistency_checker.yaml",
+      "version": "1.0"
+    }
+  ]
+}

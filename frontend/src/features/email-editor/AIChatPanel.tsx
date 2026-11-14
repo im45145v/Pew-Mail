@@ -64,56 +64,40 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       // Determine if we're modifying an existing email or creating a new one
       const isNewEmail = !emailId;
       
-      // In a real implementation, this would call the backend API
-      // For now, we'll simulate a response
-      setTimeout(() => {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: isNewEmail 
-            ? "I'll create a professional email based on your request. Here's what I'm proposing:"
-            : "I'll help modify your email based on your request. Here's what I'm suggesting:",
-          timestamp: new Date()
-        };
-
-        // Simulate proposed operations
-        const mockOperations = [
-          {
-            operation_type: "add_section",
-            data: {
-              type: "hero",
-              props: {
-                title: "Your Event Title",
-                subtitle: "Join us for an amazing experience",
-                alignment: "center"
-              }
-            },
-            description: "Added a hero section with event title and subtitle"
-          },
-          {
-            operation_type: "add_section",
-            data: {
-              type: "button",
-              props: {
-                label: "Register Now",
-                url: "#",
-                background_color: "#007bff",
-                text_color: "#ffffff",
-                alignment: "center"
-              }
-            },
-            description: "Added a registration button"
-          }
-        ];
-
-        setMessages(prev => [...prev, assistantMessage]);
-        setProposedOperations(mockOperations);
-        setProposalExplanation(isNewEmail 
-          ? "I've created a compelling hero section to grab attention and added a clear call-to-action button for registration."
-          : "I've enhanced the hero section to make it more engaging and added a prominent registration button."
-        );
-        setIsLoading(false);
-      }, 1000);
+      // Call the backend API
+      const response = await fetch(`http://localhost:8000/api/ai/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_request: inputValue,
+          email_document: emailDocument,
+          organization_id: organizationId,
+          project_id: projectId,
+          email_id: emailId,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: isNewEmail 
+          ? "I'll create a professional email based on your request. Here's what I'm proposing:"
+          : "I'll help modify your email based on your request. Here's what I'm suggesting:",
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
+      setProposedOperations(data.operations);
+      setProposalExplanation(data.explanation);
+      setIsLoading(false);
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),

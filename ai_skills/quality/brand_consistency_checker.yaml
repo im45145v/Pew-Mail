@@ -1,0 +1,66 @@
+# Brand Consistency Checker Skill
+
+---
+
+## Metadata
+name: "brand_consistency_checker"
+description: "Validates email content and design against brand guidelines, including colors, typography, logos, tone, and writing style. Ensures brand consistency across all communications."
+version: "1.0"
+category: "quality"
+
+---
+
+## Instructions
+instructions: |
+  1. **Gather Brand Guidelines**
+     - Fetch brand profiles for the organization/project.
+     - Extract guidelines for colors, typography, logos, tone, and writing style.
+
+  2. **Analyze Email**
+     - Review email sections for compliance with brand guidelines.
+     - Check colors and typography against brand-approved palette and fonts.
+     - Validate logo usage (e.g., placement, size, URL).
+     - Assess writing tone and style for consistency.
+
+  3. **Identify Deviations**
+     - Flag deviations from brand guidelines (e.g., incorrect colors, fonts).
+     - Highlight sections with inconsistent tone or messaging.
+
+  4. **Suggest Corrections**
+     - Recommend replacements for non-compliant elements.
+     - Propose alternative wording for tone inconsistencies.
+
+  5. **Generate Report**
+     - Create a detailed report of brand consistency issues.
+     - Include severity levels (e.g., high, medium, low).
+
+  6. **Apply Corrections**
+     - If the user approves, apply corrections to the email document.
+     - Provide a summary of changes made.
+
+---
+
+## Use Cases
+use_cases:
+  - "Check this email for brand consistency before I send it."
+  - "Ensure this invitation matches our brand guidelines."
+  - "I need to validate this newsletter against our brand profile."
+  - "Flag any brand deviations in this email."
+  - "I want to make sure our emails are consistent with our brand."
+
+---
+
+## Constraints
+constraints:
+  - "Must have access to brand guidelines for the organization/project."
+  - "Must not alter the email's core message or intent."
+  - "Must flag deviations objectively without opinionated recommendations."
+
+---
+
+## Tools
+tools:
+  - "document_operations"  # Apply corrections to the email document
+  - "brand_validation"     # Validate against brand guidelines
+  - "content_analysis"     # Analyze writing tone and style
+  - "color_validation"     # Verify color usage against brand palette

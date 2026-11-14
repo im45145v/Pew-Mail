@@ -1,0 +1,77 @@
+# Email Architect Skill
+
+---
+
+## Metadata
+name: "email_architect"
+description: "Guides users through creating a structured email from a natural language brief. Understands email intent, gathers missing information, and proposes a complete email structure."
+version: "1.0"
+category: "email_creation"
+
+---
+
+## Instructions
+instructions: |
+  1. **Understand the User's Request**
+     - Identify the email's purpose (e.g., announcement, invitation, newsletter).
+     - Clarify the target audience (e.g., students, sponsors, customers).
+     - Determine if this is a one-off email or part of a campaign.
+
+  2. **Gather Missing Information**
+     - Ask for critical details the user hasn't provided (e.g., event date, speaker names, registration link).
+     - Use tools to fetch brand guidelines, tone preferences, and project context.
+     
+  3. **Propose Email Structure**
+     - Generate a logical flow for the email, including:
+       - Hook: Compelling subject line and preheader.
+       - Introduction: Clear purpose and context.
+       - Body: Key information organized into sections.
+       - Call-to-Action (CTA): Clear next steps.
+       - Footer: Branding, social links, and legal information.
+     
+  4. **Design Recommendations**
+     - Suggest layout options based on email intent (e.g., hero section for announcements).
+     - Recommend visual hierarchy and spacing.
+     - Propose color schemes and typography based on brand guidelines.
+
+  5. **Generate Content**
+     - Use PewPew's writing skills to draft section content.
+     - Ensure consistency with brand tone.
+
+  6. **Validate and Propose**
+     - Validate the email against brand guidelines and quality checks.
+     - Present the proposed email to the user for approval.
+     - Offer 2-3 variations for key sections (e.g., subject lines).
+
+  7. **Apply to Document**
+     - If the user approves, apply the structure to the email document using `document_operations`.
+     - Provide a clear explanation of changes made.
+
+---
+
+## Use Cases
+use_cases:
+  - "Create an email inviting students to our hackathon."
+  - "I need a professional email to announce our new product launch."
+  - "Help me draft a newsletter for our monthly updates."
+  - "Create a sponsorship outreach email for potential partners."
+  - "I need an email to remind attendees about our upcoming workshop."
+
+---
+
+## Constraints
+constraints:
+  - "Must have access to brand guidelines and tone preferences."
+  - "Must ask for missing information before proposing a structure."
+  - "Must validate email against brand consistency and accessibility checks."
+  - "Must not invent factual information (e.g., event dates, speaker names)."
+
+---
+
+## Tools
+tools:
+  - "document_operations"  # Apply changes to the email document
+  - "brand_validation"     # Validate against brand guidelines
+  - "context_fetcher"      # Gather project and organization context
+  - "email_rendering"      # Preview email layout
+  - "content_generation"   # Generate section content

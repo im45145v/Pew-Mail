@@ -45,6 +45,15 @@ class StreamRequest(BaseModel):
 class StreamResponse(BaseModel):
     response: str
 
+class GenerateAndModifyEmailRequest(BaseModel):
+    user_request: str
+    email_document: Optional[Dict[str, Any]] = None
+    email_id: Optional[uuid.UUID] = None
+    organization_id: uuid.UUID
+    project_id: uuid.UUID
+    model: str = "gpt-4"
+    temperature: float = 0.7
+
 @router.post("/generate-email", response_model=AIResponse)
 async def generate_email(request: GenerateEmailRequest, db: Session = Depends(get_db)):
     """Generate a new email document from a natural language brief"""
@@ -148,3 +157,70 @@ def list_providers():
             }
         ]
     }
+
+@router.post("/generate", response_model=AIResponse)
+async def generate_email_operations(
+    request: GenerateAndModifyEmailRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Generate operations to create or modify an email document based on a user request.
+    
+    Args:
+        request: {
+            "user_request": "Create an email for a hackathon invitation",
+            "email_document": {existing email document},  # Optional: existing email
+            "email_id": "uuid",  # Optional: existing email ID
+            "organization_id": "uuid",
+            "project_id": "uuid",
+            "model": "gpt-4",
+            "temperature": 0.7
+        }
+        
+    Returns:
+        AIResponse: {
+            "operations": [{"operation_type": "add_section", "data": {...}, "description": "Added hero section"}],
+            "explanation": "I've created a compelling hero section and added a registration button."
+        }
+    """
+    ai_service = get_ai_service(db)
+    
+    try:
+        # Select relevant skills based on the request
+        context = ai_service.context_assembler.assemble_context(
+            str(request.organization_id),
+            str(request.project_id)
+        )
+        
+        skills = select_relevant_skills(request.user_request, context)
+        
+        # If email_document is provided, modify; otherwise, create new
+        if request.email_document:
+            operations = await ai_service.modify_email(
+                request.user_request,
+                request.email_document,
+                skills,
+                request.model,
+                request.temperature
+            )
+        else:
+            operations = await ai_service.generate_email_from_brief(
+                request.user_request,
+                str(request.organization_id),
+                str(request.project_id),
+                request.model,
+                request.temperature
+            )
+        
+        # Apply operations to the email document
+        explanation = "I've processed your request and prepared the following changes:"
+        
+        return {
+            "operations": operations,
+            "explanation": explanation
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate email operations: {str(e)}"
+        )
